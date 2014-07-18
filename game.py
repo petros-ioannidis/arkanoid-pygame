@@ -12,8 +12,14 @@ WHITE = (255, 255, 255)
 class Game(object):
     """Main game"""
 
-    def __init__(self, bg_color = WHITE):
+    def __init__(self, dimension, bg_color = WHITE):
+        """constructor for the game object
+
+        dimension -- a dictionary with 'x' and 'y' keys with the dimensions of the game screen
+        bg_color -- the color of the board (R, G, B)
+        """
         self.bg_color = bg_color
+        self.dimension = {'x': dimension[0], 'y': dimension[1]}
 
     def main(self, screen):
         clock = pygame.time.Clock()
@@ -25,30 +31,33 @@ class Game(object):
         self.blocks = pygame.sprite.Group()
         wall = pygame.image.load('wall.png')
         wall_size = wall.get_size()
-        hori_wall = pygame.transform.scale(wall, (640, wall_size[1]))
-        vert_wall = pygame.transform.scale(wall, (wall_size[0], 480))
+        hori_wall = pygame.transform.scale(wall, (self.dimension['x'], wall_size[1]))
+        vert_wall = pygame.transform.scale(wall, (wall_size[0], self.dimension['y']))
 
-        wall = pygame.sprite.Sprite(self.walls)
-        wall.image = hori_wall
-        wall.rect = pygame.rect.Rect((0,0), hori_wall.get_size())
+        wall_list = zip([
+                            (0,0), 
+                            (0,0),
+                            (0,self.dimension['y'] - hori_wall.get_size()[1]), 
+                            (self.dimension['x'] - hori_wall.get_size()[1],0)],\
 
-        wall = pygame.sprite.Sprite(self.walls)
-        wall.image = vert_wall
-        wall.rect = pygame.rect.Rect((0,0), vert_wall.get_size())
+                            [hori_wall,
+                            vert_wall,
+                            hori_wall,
+                            vert_wall
+                        ])
 
-        wall = pygame.sprite.Sprite(self.walls)
-        wall.image = hori_wall
-        wall.rect = pygame.rect.Rect((0,470), hori_wall.get_size())
+        for _wall in wall_list:
+            wall = pygame.sprite.Sprite(self.walls)
+            wall.image =_wall[1]
+            wall.rect = pygame.rect.Rect(_wall[0], _wall[1].get_size())
 
-        wall = pygame.sprite.Sprite(self.walls)
-        wall.image = vert_wall
-        wall.rect = pygame.rect.Rect((630,0), vert_wall.get_size())
-
+        #random block position
         block = Block((100,100),self.blocks)
 
         sprites.add(self.walls)
         sprites.add(self.players)
         sprites.add(self.blocks)
+
         while True:
             dt = clock.tick(120)
             for event in pygame.event.get():
