@@ -1,3 +1,4 @@
+from __future__ import division
 import pygame
 
 class Racket(pygame.sprite.Sprite):
@@ -15,6 +16,13 @@ class Racket(pygame.sprite.Sprite):
         #it should be more generic
         self.image = pygame.transform.scale(self.image,(80,20))
         self.rect = pygame.rect.Rect((40,440), self.image.get_size())
+        self.dim = (80, 20)
+        self.rotation = dict()
+        #how many pieces has the racket(accuracy for angles)
+        vector_space_div = 5
+        step = 80/5
+        #for cut_begin in range(0, 80, step):
+            #self.rotation[
 
     def update(self, dt, game):
         """The basic movement of the racket"""
