@@ -30,7 +30,9 @@ class Racket(pygame.sprite.Sprite):
         """
         relative_dist = self.rect.center[0] - collided_object.rect.center[0]
         norm_relative_dist = relative_dist/self.rect.center[0]
-        return -norm_relative_dist*self.max_angle
+        angle =  -norm_relative_dist*self.max_angle
+        collided_object.speed['x'] = sin(angle)*collided_object.top_speed['x']
+        collided_object.speed['y'] = -abs(cos(angle)*collided_object.top_speed['y'])
 
     def update(self, dt, game):
         """The basic movement of the racket"""

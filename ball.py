@@ -40,24 +40,6 @@ class Ball(pygame.sprite.Sprite):
 
         for racket in pygame.sprite.spritecollide(self, game.players, False):
             angle = racket.calculate_rotation(self)
-            cell = racket.rect
-            if last.right <= cell.left and new.right > cell.left:
-                new.right = cell.left
-                self.speed['x'] = sin(angle)*self.top_speed['x']
-                self.speed['y'] = -abs(cos(angle)*self.top_speed['y'])
-            elif last.left >= cell.right and new.left < cell.right:
-                new.left = cell.right
-                self.speed['x'] = sin(angle)*self.top_speed['x']
-                self.speed['y'] = -abs(cos(angle)*self.top_speed['y'])
-
-            if last.bottom <= cell.top and new.bottom > cell.top:
-                new.bottom = cell.top
-                self.speed['x'] = sin(angle)*self.top_speed['x']
-                self.speed['y'] = -abs(cos(angle)*self.top_speed['y'])
-            elif last.top >= cell.bottom and new.top < cell.bottom:
-                new.top = cell.bottom
-                self.speed['x'] = sin(angle)*self.top_speed['x']
-                self.speed['y'] = -abs(cos(angle)*self.top_speed['y'])
 
         for cell in pygame.sprite.spritecollide(self, game.blocks, True):
             cell = cell.rect

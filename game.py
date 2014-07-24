@@ -2,6 +2,7 @@ import pygame
 from racket import Racket
 from ball import Ball
 from block import Block
+from wall import Wall
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0) 
@@ -30,15 +31,15 @@ class Game(object):
         self.walls = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
         wall = pygame.image.load('wall.png')
-        wall_size = wall.get_size()
-        hori_wall = pygame.transform.scale(wall, (self.dimension['x'], wall_size[1]))
-        vert_wall = pygame.transform.scale(wall, (wall_size[0], self.dimension['y']))
+        wall_size = (10,10)
+        hori_wall = (self.dimension['x'], wall_size[1])
+        vert_wall = (wall_size[0], self.dimension['y'])
 
         wall_list = zip([
                             (0,0), 
                             (0,0),
-                            (0,self.dimension['y'] - hori_wall.get_size()[1]), 
-                            (self.dimension['x'] - hori_wall.get_size()[1],0)],\
+                            (0,self.dimension['y'] - 10), 
+                            (self.dimension['x'] - 10,0)],\
 
                             [hori_wall,
                             vert_wall,
@@ -47,9 +48,7 @@ class Game(object):
                         ])
 
         for _wall in wall_list:
-            wall = pygame.sprite.Sprite(self.walls)
-            wall.image =_wall[1]
-            wall.rect = pygame.rect.Rect(_wall[0], _wall[1].get_size())
+            wall = Wall(_wall[0], _wall[1], self.walls)
 
         #random block position
         block = Block((100,100),self.blocks)
