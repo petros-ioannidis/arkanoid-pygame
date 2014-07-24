@@ -15,11 +15,14 @@ class Ball(pygame.sprite.Sprite):
         #to add variable speed and rotation and angle
         self.top_speed = {'x': 400, 'y': 400}
         self.speed = {'x': 400, 'y': 400}
+        self.pos = {'x':320, 'y':280}
     
     def update(self, dt, game):
         last = self.rect.copy()
-        self.rect.x += self.speed['x']*dt
-        self.rect.y += self.speed['y']*dt
+        self.pos['x'] += self.speed['x']*dt 
+        self.pos['y'] += self.speed['y']*dt 
+        self.rect.x = self.pos['x']
+        self.rect.y = self.pos['y']
 
         new = self.rect
         for wall in pygame.sprite.spritecollide(self, game.walls, False):
