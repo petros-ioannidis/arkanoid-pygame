@@ -1,4 +1,5 @@
 from __future__ import division
+from math import cos, sin, pi
 import pygame
 
 class Racket(pygame.sprite.Sprite):
@@ -18,11 +19,18 @@ class Racket(pygame.sprite.Sprite):
         self.rect = pygame.rect.Rect((40,440), self.image.get_size())
         self.dim = (80, 20)
         self.rotation = dict()
+        self.max_angle = 2*pi
         #how many pieces has the racket(accuracy for angles)
-        vector_space_div = 5
-        step = 80/5
-        #for cut_begin in range(0, 80, step):
-            #self.rotation[
+
+    def calculate_rotation(self, collided_object):
+        """Returns the angle that an object will have after colliding
+        with the racket
+
+        collided_object -- the object colliding with the racket
+        """
+        relative_dist = self.rect.center[0] - collided_object.rect.center[0]
+        norm_relative_dist = relative_dist/self.rect.center[0]
+        return -norm_relative_dist*self.max_angle
 
     def update(self, dt, game):
         """The basic movement of the racket"""
