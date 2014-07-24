@@ -22,24 +22,11 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y += self.speed['y']*dt
 
         new = self.rect
-        for cell in pygame.sprite.spritecollide(self, game.walls, False):
-            cell = cell.rect
-            if last.right <= cell.left and new.right > cell.left:
-                new.right = cell.left
-                self.speed['x'] = -self.speed['x']
-            elif last.left >= cell.right and new.left < cell.right:
-                new.left = cell.right
-                self.speed['x'] = -self.speed['x']
-
-            if last.bottom <= cell.top and new.bottom > cell.top:
-                new.bottom = cell.top
-                self.speed['y'] = -self.speed['y']
-            elif last.top >= cell.bottom and new.top < cell.bottom:
-                new.top = cell.bottom
-                self.speed['y'] = -self.speed['y']
+        for wall in pygame.sprite.spritecollide(self, game.walls, False):
+            wall.calculate_speed(self)
 
         for racket in pygame.sprite.spritecollide(self, game.players, False):
-            angle = racket.calculate_rotation(self)
+            racket.calculate_speed(self)
 
         for cell in pygame.sprite.spritecollide(self, game.blocks, True):
             cell = cell.rect

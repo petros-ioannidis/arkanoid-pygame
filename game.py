@@ -2,7 +2,7 @@ import pygame
 from racket import Racket
 from ball import Ball
 from block import Block
-from wall import Wall
+from wall import LeftWall, RightWall, BottomWall, TopWall 
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0) 
@@ -44,11 +44,16 @@ class Game(object):
                             [hori_wall,
                             vert_wall,
                             hori_wall,
-                            vert_wall
+                            vert_wall],\
+
+                            [TopWall,
+                            LeftWall,
+                            BottomWall,
+                            RightWall
                         ])
 
         for _wall in wall_list:
-            wall = Wall(_wall[0], _wall[1], self.walls)
+            wall = _wall[2](_wall[0], _wall[1], self.walls)
 
         #random block position
         block = Block((100,100),self.blocks)

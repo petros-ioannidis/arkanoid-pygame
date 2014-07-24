@@ -22,7 +22,7 @@ class Racket(pygame.sprite.Sprite):
         self.max_angle = 2*pi
         #how many pieces has the racket(accuracy for angles)
 
-    def calculate_rotation(self, collided_object):
+    def calculate_speed(self, collided_object):
         """Returns the angle that an object will have after colliding
         with the racket
 
