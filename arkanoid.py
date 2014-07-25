@@ -3,5 +3,7 @@ from game import Game
 
 if __name__ == '__main__':
     pygame.init()
-    screen = pygame.display.set_mode((640,480))
-    Game((640,480)).main(screen)
+    dim = (800, 600)
+    #dim = (640, 480)
+    screen = pygame.display.set_mode(dim)
+    Game(dim).main(screen)

@@ -1,3 +1,4 @@
+from __future__ import division
 import pygame
 from racket import Racket
 from ball import Ball
@@ -27,11 +28,11 @@ class Game(object):
         sprites = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
         self.ball = Ball(sprites)
-        self.player = Racket(self.players)
-        self.walls = pygame.sprite.Group()
-        self.blocks = pygame.sprite.Group()
         wall = pygame.image.load('wall.png')
         wall_size = (10,10)
+        self.player = Racket((self.dimension['x']/2, self.dimension['y'] - wall_size[1]), self.players)
+        self.walls = pygame.sprite.Group()
+        self.blocks = pygame.sprite.Group()
         hori_wall = (self.dimension['x'], wall_size[1])
         vert_wall = (wall_size[0], self.dimension['y'])
 

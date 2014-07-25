@@ -5,7 +5,7 @@ import pygame
 class Racket(pygame.sprite.Sprite):
     """Racket class"""
 
-    def __init__(self, *groups):
+    def __init__(self, position, *groups):
         """Constructor of the Racket class. 
         Nothing fancy here it is just a regular sprite
         class
@@ -16,10 +16,12 @@ class Racket(pygame.sprite.Sprite):
         #need to change the way the positions are calculated
         #it should be more generic
         self.image = pygame.transform.scale(self.image,(80,20))
-        self.rect = pygame.rect.Rect((40,440), self.image.get_size())
+        self.position = (int(position[0]), position[1] - self.image.get_size()[1]- 10)
+        print self.position
+        self.rect = pygame.rect.Rect(self.position, self.image.get_size())
         self.dim = (80, 20)
         self.rotation = dict()
-        self.max_angle = 2*pi
+        self.max_angle = 2*pi-pi/3
         #how many pieces has the racket(accuracy for angles)
 
     def calculate_speed(self, collided_object):
@@ -30,7 +32,7 @@ class Racket(pygame.sprite.Sprite):
         """
         relative_dist = self.rect.center[0] - collided_object.rect.center[0]
         norm_relative_dist = relative_dist/self.rect.center[0]
-        angle =  -norm_relative_dist*self.max_angle
+        angle = -norm_relative_dist*self.max_angle
         collided_object.speed['x'] = sin(angle)*collided_object.top_speed['x']
         collided_object.speed['y'] = -abs(cos(angle)*collided_object.top_speed['y'])
 
