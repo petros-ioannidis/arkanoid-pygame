@@ -31,8 +31,9 @@ class Ball(pygame.sprite.Sprite):
         for racket in pygame.sprite.spritecollide(self, game.players, False):
             racket.calculate_speed(self)
 
-        for cell in pygame.sprite.spritecollide(self, game.blocks, True):
-            cell = cell.rect
+        cell = pygame.sprite.spritecollide(self, game.blocks, True)
+        if cell:
+            cell = cell[0].rect
             if last.right <= cell.left and new.right > cell.left:
                 new.right = cell.left
                 self.speed['x'] = -self.speed['x']
