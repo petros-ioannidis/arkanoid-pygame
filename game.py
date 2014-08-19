@@ -58,6 +58,9 @@ class Game(object):
 
         #random block position
         block = Block((100,100),self.blocks)
+        for dimx in range(10):
+            for dimy in range(6):
+                block = Block((100 + dimx*61,100 + dimy*21),self.blocks)
 
         sprites.add(self.walls)
         sprites.add(self.players)

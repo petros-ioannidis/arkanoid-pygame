@@ -17,11 +17,10 @@ class Racket(pygame.sprite.Sprite):
         #it should be more generic
         self.image = pygame.transform.scale(self.image,(80,20))
         self.position = (int(position[0]), position[1] - self.image.get_size()[1]- 10)
-        print self.position
         self.rect = pygame.rect.Rect(self.position, self.image.get_size())
         self.dim = (80, 20)
         self.rotation = dict()
-        self.max_angle = 2*pi-pi/3
+        self.max_angle = pi + pi/2
         #how many pieces has the racket(accuracy for angles)
 
     def calculate_speed(self, collided_object):
