@@ -13,7 +13,7 @@ class Wall(pygame.sprite.Sprite):
         super(Wall, self).__init__(*groups)
         self.left_top = left_top
         self.dimensions = dimensions
-        self.image = pygame.image.load('wall.png')
+        self.image = pygame.image.load('../sprites/wall.png')
         self.image = pygame.transform.scale(self.image, self.dimensions)
         self.rect = pygame.rect.Rect(self.left_top, self.dimensions)
 

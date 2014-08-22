@@ -10,7 +10,7 @@ class Ball(pygame.sprite.Sprite):
         class
         """
         super(Ball, self).__init__(*groups)
-        self.image = pygame.image.load('ball.png')
+        self.image = pygame.image.load('../sprites/ball.png')
         self.rect = pygame.rect.Rect((320,280), self.image.get_size())
         #to add variable speed and rotation and angle
         self.top_speed = {'x': 400, 'y': 400}

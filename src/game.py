@@ -28,7 +28,6 @@ class Game(object):
         sprites = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
         self.ball = Ball(sprites)
-        wall = pygame.image.load('wall.png')
         wall_size = (10,10)
         self.player = Racket((self.dimension['x']/2, self.dimension['y'] - wall_size[1]), self.players)
         self.walls = pygame.sprite.Group()

@@ -12,7 +12,7 @@ class Racket(pygame.sprite.Sprite):
         """
         super(Racket, self).__init__(*groups)
         #This will not be a wall but it is easy to use for now
-        self.image = pygame.image.load('wall.png')
+        self.image = pygame.image.load('../sprites/wall.png')
         #need to change the way the positions are calculated
         #it should be more generic
         self.image = pygame.transform.scale(self.image,(80,20))
