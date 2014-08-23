@@ -22,6 +22,7 @@ class Ball(pygame.sprite.Sprite):
     
     def update(self, dt, game):
         last = self.rect.copy()
+        print self.pos
         self.pos['x'] += self.speed['x']*dt 
         self.pos['y'] += self.speed['y']*dt 
         self.rect.x = self.pos['x']

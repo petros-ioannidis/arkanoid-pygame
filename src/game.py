@@ -1,5 +1,6 @@
 from __future__ import division
 import pygame
+import menu
 from racket import Racket
 from ball import Ball
 from block import Block
@@ -22,6 +23,7 @@ class Game(object):
         """
         self.bg_color = bg_color
         self.dimension = {'x': dimension[0], 'y': dimension[1]}
+        self.paused = False
 
     def main(self, screen):
         clock = pygame.time.Clock()
@@ -66,10 +68,15 @@ class Game(object):
         sprites.add(self.blocks)
 
         while True:
-            dt = clock.tick(120)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.paused = True
+                        menu.PauseMenu().handle_input(screen, self)
+                        dt = clock.tick(120)
+            dt = clock.tick(120)
             sprites.update(dt/1000., self)
             screen.fill((200, 200, 200))
             sprites.draw(screen)

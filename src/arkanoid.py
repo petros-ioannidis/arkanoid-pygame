@@ -5,4 +5,4 @@ if __name__ == '__main__':
     pygame.init()
     dim = (800, 600)
     screen = pygame.display.set_mode(dim)
-    MainMenu().main(screen)
+    MainMenu().handle_input(screen)

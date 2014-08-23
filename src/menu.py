@@ -1,5 +1,5 @@
 import pygame
-from game import Game
+import game
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0) 
@@ -95,8 +95,8 @@ class MainMenu(Menu):
         font_space = 4
         super(MainMenu, self).__init__(options, font_size, font_space, WHITE, RED, BLACK)
 
-    def main(self, screen):
-        """Display the menu
+    def handle_input(self, screen):
+        """Handle the user input
         This function is responsible for updating the menu selection and
         reading the user input. Furthermore, it creates the game object
         and performs the necessary actions.
@@ -135,7 +135,7 @@ class MainMenu(Menu):
                     elif event.key == pygame.K_RETURN:
                         if self.active:
                             if self.options[self.highlight_entry] == "Start game":
-                                Game((screen.get_width(), screen.get_height())).main(screen)
+                                game.Game((screen.get_width(), screen.get_height())).main(screen)
                                 self.active = False
                                 self.display(screen)
                             elif self.options[self.highlight_entry] == "Exit":
@@ -146,13 +146,55 @@ class PauseMenu(Menu):
     """Pause menu of the game
     This menu is displayed when the user pauses the game
     """
-
-    def __init__(self, font_size=36, font_space=4):
+    def __init__(self):
         options = ('Return to game',
                    'Options',
                    'Exit to main menu')
-        font_space = font_space
-        font_size = font_size
-        super(MainMenu, self).__init__(options, font_size, font_space)
+        font_size = 36
+        font_space = 4
+        super(PauseMenu, self).__init__(options, font_size, font_space, BLACK, BLUE, WHITE)
 
-    #def display(self, screen):
+    def handle_input(self, screen, game_instance):
+        """Handle the user input
+        This function is responsible for updating the menu selection and
+        reading the user input. Furthermore, it creates the game object
+        and performs the necessary actions.
+
+        screen -- the display that the menu will be displayed
+        """
+        clock = pygame.time.Clock()
+        self.display(screen)
+        
+        while True:
+            dt = clock.tick(120)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        if self.active:
+                            self.highlight((self.highlight_entry + 1) % len(self.options))
+                        else:
+                            self.active = True
+                            self.highlight(0)
+                        self.display(screen)
+
+                    if event.key == pygame.K_UP:
+                        if self.active:
+                            self.highlight((self.highlight_entry - 1) % len(self.options))
+                        else:
+                            self.active = True
+                            self.highlight(len(self.options) - 1)
+                        self.display(screen)
+
+                    elif event.key == pygame.K_ESCAPE:
+                        self.active = False
+                        self.display(screen)
+                        game_instance.paused = False
+                        return
+
+                    elif event.key == pygame.K_RETURN:
+                        if self.active:
+                            if self.options[self.highlight_entry] == "Return to game":
+                                game_instance.paused = False
+                                return
