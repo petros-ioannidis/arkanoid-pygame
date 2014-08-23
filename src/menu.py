@@ -9,6 +9,26 @@ WHITE = (255, 255, 255)
 
 
 class Menu(object):
+    """The basic menu class of the game
+    This class is used as a parent for the various classes that represent the
+    menus in the game.
+    
+    args:
+
+        options -- a tuple of possible options in the menu
+        font_size -- integer representing the size of the font
+        font_space -- integer representing the space between the entries
+        font -- the type of font to be used
+
+    attrs:
+       
+        options -- the list of possible options in the menu
+        font_size -- integer representing the size of the font
+        font_space -- integer representing the space between the entries
+        font -- the type of font to be used
+        height -- the height of the menu
+        active -- a bool indicating if the menu is currently active
+    """
     def __init__(self, options, font_size, font_space, font=None):
         self.options = options
         self.font = pygame.font.Font(font, font_size)
@@ -17,25 +37,29 @@ class Menu(object):
         self.height = (font_size + font_space) * len(options)
         self.active = False
 
+    def display(self, screen):
+        pass
+
 class MainMenu(Menu):
-    """Main menu of the game"""
+    """Main menu of the game
+    This menu is displayed at the starting screen of the game
+    """
 
     def __init__(self, font_size=36, font_space=4):
-        """Basic constructor for the main menu
-
-        font_size -- int representing the size of the font
-        font_space -- int representing the space between the entries
-        """
         options = ('Start game',
                    'Scores',
                    'Options',
-                   'Credits')
+                   'Credits',
+                   'Exit')
         font_space = font_space
         font_size = font_size
         super(MainMenu, self).__init__(options, font_size, font_space)
 
     def display(self, screen):
         """Display the menu
+        This function is responsible for updating the menu selection and
+        reading the user input. Furthermore, it creates the game object
+        and performs the necessary actions.
 
         screen -- the display that the menu will be displayed
         """
@@ -43,11 +67,14 @@ class MainMenu(Menu):
         y = screen.get_height()//2 - self.height//2 
 
         option_obj = dict()
+        #a dictionary with the objects of the menu options
+        #{number} => (text object, rect object)
         for num, entry in enumerate(self.options):
             text = self.font.render(entry, 1, WHITE)
             text_rect = text.get_rect(centerx=screen.get_width()//2, centery=y + self.font_size + self.font_space)
             option_obj[num] = text, text_rect
             y += self.font_size + self.font_space
+
         for text, rect in option_obj.itervalues():
             screen.blit(text, rect)
         pygame.display.flip()
@@ -102,6 +129,8 @@ class MainMenu(Menu):
                                 screen.fill(BLACK)
                                 for text, rect in option_obj.itervalues():
                                     screen.blit(text, rect)
+                            elif self.options[highlight_entry] == "Exit":
+                                return
                         pygame.display.flip()
 
 

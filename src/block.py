@@ -1,4 +1,7 @@
 import pygame
+import os
+
+dir = os.path.dirname(__file__)
 
 class Block(pygame.sprite.Sprite):
     """Base class for blocks"""
@@ -10,7 +13,7 @@ class Block(pygame.sprite.Sprite):
         """
         super(Block, self).__init__(*groups)
         #this is to be changed to custom blocks
-        self.image = pygame.image.load('../sprites/wall.png')
+        self.image = pygame.image.load(os.path.join(dir, '../sprites/wall.png'))
         self.image = pygame.transform.scale(self.image, (60,20))
         self.rect = pygame.rect.Rect(position, self.image.get_size()) 
 
