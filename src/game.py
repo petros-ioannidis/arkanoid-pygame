@@ -29,9 +29,10 @@ class Game(object):
         clock = pygame.time.Clock()
         sprites = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
-        self.ball = Ball(sprites)
+        self.ball = Ball((300, 200), sprites)
         wall_size = (10,10)
         self.player = Racket((self.dimension['x']/2, self.dimension['y'] - wall_size[1]), self.players)
+        self.ball.attach(self.player, 'up')
         self.walls = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
         hori_wall = (self.dimension['x'], wall_size[1])
@@ -58,7 +59,6 @@ class Game(object):
             wall = _wall[2](_wall[0], _wall[1], self.walls)
 
         #random block position
-        block = Block((100,100),self.blocks)
         for dimx in range(10):
             for dimy in range(6):
                 block = Block((100 + dimx*61,100 + dimy*21),self.blocks)
