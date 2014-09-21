@@ -19,7 +19,7 @@ class Ball(pygame.sprite.Sprite):
         #to add variable speed and rotation and angle
         self.top_speed = {'x': 400, 'y': 400}
         self.speed = {'x': 400, 'y': 400}
-        self.attached_to = {'sprite': None, 'side': None}
+        self.attached_to = {'sprite': None, 'side': None, 'relative_position': None, 'move': None}
         self.position = {'x': position[0], 'y': position[1]}
 
     def attach(self, sprite, side):
@@ -30,13 +30,15 @@ class Ball(pygame.sprite.Sprite):
         """
         self.attached_to['sprite'] = sprite
         self.attached_to['side'] = side
+        self.attached_to['relative_position'] = 0
+        self.attached_to['move'] = 0.01
         self.speed['x'] = 0
         self.speed['y'] = 0
         if self.attached_to['side'] == 'up':
-            self.position['x'] = sprite.rect.x + self.dim[0]
-            self.position['y'] = sprite.rect.y - self.dim[1]
-            self.rect.x = sprite.rect.x + self.dim[0]
-            self.rect.y = sprite.rect.y - self.dim[1]
+            self.position['x'] = sprite.rect.center[0] + self.dim[0]
+            self.position['y'] = sprite.rect.center[1] - self.dim[1]
+            self.rect.x = sprite.rect.center[0] + self.dim[0]
+            self.rect.y = sprite.rect.center[1] - self.dim[1]
 
     def detach(self):
         """Detach the ball from the current object"""
@@ -51,10 +53,13 @@ class Ball(pygame.sprite.Sprite):
             if key[pygame.K_SPACE]:
                 self.detach()
             if self.attached_to['side'] == 'up':
-                self.position['x'] = self.attached_to['sprite'].rect.x + self.dim[0]
+                self.position['x'] = self.attached_to['sprite'].rect.x + self.dim[0] + self.attached_to['sprite'].dim[0]*self.attached_to['relative_position']
                 self.position['y'] = self.attached_to['sprite'].rect.y - self.dim[1]
-                self.rect.x = self.attached_to['sprite'].rect.x + self.dim[0]
-                self.rect.y = self.attached_to['sprite'].rect.y - self.dim[1]
+                self.attached_to['relative_position'] += self.attached_to['move']
+                if abs(self.attached_to['relative_position']) >= 0.5:
+                    self.attached_to['move'] = -self.attached_to['move']
+                self.rect.x = self.position['x']
+                self.rect.y = self.position['y']
             return
 
         last = self.rect.copy()
