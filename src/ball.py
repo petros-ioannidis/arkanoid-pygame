@@ -20,6 +20,7 @@ class Ball(pygame.sprite.Sprite):
         self.top_speed = {'x': 400, 'y': 400}
         self.speed = {'x': 400, 'y': 400}
         self.attached_to = {'sprite': None, 'side': None}
+        self.position = {'x': position[0], 'y': position[1]}
 
     def attach(self, sprite, side):
         """Attach the ball to an object
@@ -32,19 +33,38 @@ class Ball(pygame.sprite.Sprite):
         self.speed['x'] = 0
         self.speed['y'] = 0
         if self.attached_to['side'] == 'up':
+            self.position['x'] = sprite.rect.x + self.dim[0]
+            self.position['y'] = sprite.rect.y - self.dim[1]
             self.rect.x = sprite.rect.x + self.dim[0]
             self.rect.y = sprite.rect.y - self.dim[1]
+
+    def detach(self):
+        """Detach the ball from the current object"""
+        self.attached_to['sprite'] = None
+        self.attached_to['side'] = None
+        self.speed['x'] = 0
+        self.speed['y'] = 400
     
     def update(self, dt, game):
         if self.attached_to['sprite']:
+            key = pygame.key.get_pressed()
+            if key[pygame.K_SPACE]:
+                self.detach()
             if self.attached_to['side'] == 'up':
+                self.position['x'] = self.attached_to['sprite'].rect.x + self.dim[0]
+                self.position['y'] = self.attached_to['sprite'].rect.y - self.dim[1]
                 self.rect.x = self.attached_to['sprite'].rect.x + self.dim[0]
                 self.rect.y = self.attached_to['sprite'].rect.y - self.dim[1]
             return
 
         last = self.rect.copy()
-        self.rect.x += self.speed['x']*dt 
-        self.rect.y += self.speed['y']*dt 
+
+        #this solves the frozen axis bug
+
+        self.position['x'] += self.speed['x']*dt
+        self.position['y'] += self.speed['y']*dt
+        self.rect.x = self.position['x']
+        self.rect.y = self.position['y']
 
         new = self.rect
         for wall in pygame.sprite.spritecollide(self, game.walls, False):
