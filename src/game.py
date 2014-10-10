@@ -61,7 +61,6 @@ class Game(object):
             for dimy in range(6):
                 initial_grid.append((100 + dimx*61, 100 + dimy*21))
 
-        print initial_grid
         self.stage = Stage(self, initial_grid, (self.dimension['x']/2, self.dimension['y'] - wall_size[1]), wall_list)
 
         self.sprites.add(self.walls)

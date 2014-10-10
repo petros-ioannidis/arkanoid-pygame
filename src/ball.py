@@ -8,10 +8,6 @@ class Ball(pygame.sprite.Sprite):
     """Ball class"""
 
     def __init__(self, position, *groups):
-        """Constructor of the Ball class. 
-        Nothing fancy here it is just a regular sprite
-        class
-        """
         super(Ball, self).__init__(*groups)
         self.image = pygame.image.load(os.path.join(dir, '../sprites/ball.png'))
         self.dim = self.image.get_size()
@@ -25,7 +21,7 @@ class Ball(pygame.sprite.Sprite):
     def attach(self, sprite, side):
         """Attach the ball to an object
 
-        sprite -- the object
+        sprite -- the Sprite object
         side -- which side ('up', 'down', 'left', 'right')
         """
         self.attached_to['sprite'] = sprite
@@ -78,20 +74,42 @@ class Ball(pygame.sprite.Sprite):
         for racket in pygame.sprite.spritecollide(self, game.players, False):
             racket.calculate_speed(self)
 
-        cell = pygame.sprite.spritecollide(self, game.blocks, True)
+        temp_position = self.position.copy()
+
+        #compute which block does the ball hit first by rewind the ball movement one step at the time
+        
+        cell = pygame.sprite.spritecollide(self, game.blocks, False)
+        _cell = pygame.sprite.spritecollide(self, game.blocks, False)
+        while len(_cell) > 1:
+            if self.rect.x:
+                self.rect.x -= (self.speed['x']*dt)/abs(self.speed['x']*dt)
+            if self.rect.y:
+                self.rect.y -= (self.speed['y']*dt)/abs(self.speed['y']*dt)
+            cell = _cell
+            _cell = pygame.sprite.spritecollide(self, game.blocks, False)
+
+        if _cell:
+            cell = _cell
+
+        self.position = temp_position.copy()
+        self.rect.x = self.position['x']
+        self.rect.y = self.position['y']
+
         if cell:
-            cell = cell[0].rect
-            if last.right <= cell.left and new.right > cell.left:
-                new.right = cell.left
+            _cell = cell[0].rect
+
+            if last.right <= _cell.left and new.right > _cell.left:
+                new.right = _cell.left
                 self.speed['x'] = -self.speed['x']
-            elif last.left >= cell.right and new.left < cell.right:
-                new.left = cell.right
+            elif last.left >= _cell.right and new.left < _cell.right:
+                new.left = _cell.right
                 self.speed['x'] = -self.speed['x']
 
-            if last.bottom <= cell.top and new.bottom > cell.top:
-                new.bottom = cell.top
+            if last.bottom <= _cell.top and new.bottom > _cell.top:
+                new.bottom = _cell.top
                 self.speed['y'] = -self.speed['y']
-            elif last.top >= cell.bottom and new.top < cell.bottom:
-                new.top = cell.bottom
+            elif last.top >= _cell.bottom and new.top < _cell.bottom:
+                new.top = _cell.bottom
                 self.speed['y'] = -self.speed['y']
+            cell[0].kill()
 
