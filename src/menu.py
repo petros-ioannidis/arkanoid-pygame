@@ -155,7 +155,7 @@ class PauseMenu(Menu):
         super(PauseMenu, self).__init__(options, font_size, font_space, BLACK, BLUE, WHITE)
 
     def handle_input(self, screen, game_instance):
-        """Handle the user input
+        """Handle the user input and return whether or not the user wants to exit the game.
         This function is responsible for updating the menu selection and
         reading the user input. Furthermore, it creates the game object
         and performs the necessary actions.
@@ -169,7 +169,7 @@ class PauseMenu(Menu):
             dt = clock.tick(120)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return
+                    return True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
                         if self.active:
@@ -191,10 +191,14 @@ class PauseMenu(Menu):
                         self.active = False
                         self.display(screen)
                         game_instance.paused = False
-                        return
+                        return False
 
                     elif event.key == pygame.K_RETURN:
                         if self.active:
-                            if self.options[self.highlight_entry] == "Return to game":
+                            if self.options[self.highlight_entry] == 'Return to game':
                                 game_instance.paused = False
-                                return
+                                return False
+
+                            if self.options[self.highlight_entry] == 'Exit to main menu':
+                                game_instance.paused = False
+                                return True

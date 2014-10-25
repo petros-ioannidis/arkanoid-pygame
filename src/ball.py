@@ -77,6 +77,7 @@ class Ball(pygame.sprite.Sprite):
         temp_position = self.position.copy()
 
         #compute which block does the ball hit first by rewind the ball movement one step at the time
+        #Attention!!! You also have to compute what side it hits first!!
         
         cell = pygame.sprite.spritecollide(self, game.blocks, False)
         _cell = pygame.sprite.spritecollide(self, game.blocks, False)

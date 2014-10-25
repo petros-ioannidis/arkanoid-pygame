@@ -74,7 +74,9 @@ class Game(object):
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.paused = True
-                        menu.PauseMenu().handle_input(screen, self)
+                        exit = menu.PauseMenu().handle_input(screen, self)
+                        if exit:
+                            return
                         dt = clock.tick(120)
             dt = clock.tick(120)
             self.sprites.update(dt/1000., self)
