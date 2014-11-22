@@ -42,6 +42,7 @@ class Menu(object):
         self.color = color
         self.highlight_color = highlight_color
         self.bg_color = bg_color
+        self.highlight(0)
 
     def highlight(self, number_of_option):
         """Highlight the specified option on the menu
@@ -54,7 +55,7 @@ class Menu(object):
             self.active = True
             self.highlight_entry = number_of_option
 
-    def display(self, screen):
+    def display(self, screen, y=None):
         """Display the menu
         This function is responsible for updating the menu selection and
         reading the user input. Furthermore, it creates the game object
@@ -62,7 +63,8 @@ class Menu(object):
 
         screen -- the display that the menu will be displayed
         """
-        y = screen.get_height()//2 - self.height//2 
+        if not y:
+            y = screen.get_height()//2 - self.height//2 
 
         #a dictionary with the objects of the menu options
         #{number} => (text object, rect object)
@@ -75,7 +77,8 @@ class Menu(object):
             self.option_obj[num] = text, text_rect
             y += self.font_size + self.font_space
 
-        screen.fill(self.bg_color)
+        if self.bg_color:
+            screen.fill(self.bg_color)
         for text, rect in self.option_obj.itervalues():
             screen.blit(text, rect)
         pygame.display.flip()
@@ -135,8 +138,8 @@ class MainMenu(Menu):
                     elif event.key == pygame.K_RETURN:
                         if self.active:
                             if self.options[self.highlight_entry] == "Start game":
-                                game.Game((screen.get_width(), screen.get_height())).main(screen)
-                                self.active = False
+                                game.Game(screen, (screen.get_width(), screen.get_height())).main('stages/sample_stage')
+                                self.highlight(0)
                                 self.display(screen)
                             elif self.options[self.highlight_entry] == "Exit":
                                 return
@@ -146,15 +149,16 @@ class PauseMenu(Menu):
     """Pause menu of the game
     This menu is displayed when the user pauses the game
     """
-    def __init__(self):
+    def __init__(self, game_instance):
         options = ('Return to game',
                    'Options',
                    'Exit to main menu')
         font_size = 36
         font_space = 4
-        super(PauseMenu, self).__init__(options, font_size, font_space, BLACK, BLUE, WHITE)
+        self.game_instance = game_instance
+        super(PauseMenu, self).__init__(options, font_size, font_space, BLACK, RED, WHITE)
 
-    def handle_input(self, screen, game_instance):
+    def handle_input(self, screen):
         """Handle the user input and return whether or not the user wants to exit the game.
         This function is responsible for updating the menu selection and
         reading the user input. Furthermore, it creates the game object
@@ -190,15 +194,68 @@ class PauseMenu(Menu):
                     elif event.key == pygame.K_ESCAPE:
                         self.active = False
                         self.display(screen)
-                        game_instance.paused = False
+                        self.game_instance.paused = False
                         return False
 
                     elif event.key == pygame.K_RETURN:
                         if self.active:
                             if self.options[self.highlight_entry] == 'Return to game':
-                                game_instance.paused = False
+                                self.game_instance.paused = False
                                 return False
 
                             if self.options[self.highlight_entry] == 'Exit to main menu':
-                                game_instance.paused = False
+                                self.game_instance.paused = False
+                                return True
+
+class EndGameMenu(Menu):
+    """The menu to be displayed after the game ends."""
+    def __init__(self, game_instance):
+        options = ('Exit to main menu',)
+        font_size = 36
+        font_space = 4
+        self.game_instance = game_instance
+        super(EndGameMenu, self).__init__(options, font_size, font_space, BLUE, RED, WHITE)
+
+    def display(self, screen):
+        y = screen.get_height()//10 - self.height//2
+        text = self.font.render('Score: %d' % self.game_instance.score, 1, BLACK)
+        text_rect = text.get_rect(centerx=screen.get_width()//2, centery=y + self.font_size + self.font_space)
+        self.option_obj[-1] = text, text_rect
+        y = 4*screen.get_height()//5 - self.height//2
+        super(EndGameMenu, self).display(screen, y)
+
+    def handle_input(self, screen):
+        clock = pygame.time.Clock()
+        self.display(screen)
+        
+        while True:
+            dt = clock.tick(120)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        if self.active:
+                            self.highlight((self.highlight_entry + 1) % len(self.options))
+                        else:
+                            self.active = True
+                            self.highlight(0)
+                        self.display(screen)
+
+                    if event.key == pygame.K_UP:
+                        if self.active:
+                            self.highlight((self.highlight_entry - 1) % len(self.options))
+                        else:
+                            self.active = True
+                            self.highlight(len(self.options) - 1)
+                        self.display(screen)
+
+                    elif event.key == pygame.K_ESCAPE:
+                        self.active = False
+                        self.display(screen)
+                        return False
+
+                    elif event.key == pygame.K_RETURN:
+                        if self.active:
+                            if self.options[self.highlight_entry] == 'Exit to main menu':
                                 return True

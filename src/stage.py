@@ -21,7 +21,7 @@ class Stage(object):
         game.player = Racket(racket_potition, game.players)
 
         for _block in initial_grid:
-            _ = Block(_block, game.blocks)
+            _ = Block(_block[0], _block[1], game.blocks)
 
         if ball_position:
             game.ball = Ball(ball_position, game.sprites)
@@ -31,4 +31,3 @@ class Stage(object):
 
         for _wall in walls:
             _ = _wall[2](_wall[0], _wall[1], game.walls)
-

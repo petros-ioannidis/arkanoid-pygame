@@ -13,7 +13,7 @@ WHITE = (255, 255, 255)
 class Game(object):
     """Main game"""
 
-    def __init__(self, dimension, bg_color = WHITE):
+    def __init__(self, screen, dimension, bg_color = WHITE):
         """constructor for the game object
 
         dimension -- a dictionary with 'x' and 'y' keys with the dimensions of the game screen
@@ -22,12 +22,11 @@ class Game(object):
         self.bg_color = bg_color
         self.dimension = {'x': dimension[0], 'y': dimension[1]}
         self.paused = False
+        self.score = 0
+        self.screen = screen
 
-    def main(self, screen):
+    def main(self, stage_name):
         clock = pygame.time.Clock()
-        #sprites = pygame.sprite.Group()
-        #self.players = pygame.sprite.Group()
-        #self.ball = Ball((300, 200), sprites)
         self.sprites = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
@@ -40,26 +39,21 @@ class Game(object):
         wall_list = zip([
                             (0,0), 
                             (0,0),
-                            (0,self.dimension['y'] - wall_size[0]), 
                             (self.dimension['x'] - wall_size[1],0)],\
 
                             [hori_wall,
                             vert_wall,
-                            hori_wall,
                             vert_wall],\
 
                             [TopWall,
                             LeftWall,
-                            BottomWall,
                             RightWall
                         ])
 
 
-        #random block position
-        initial_grid = []
-        for dimx in range(10):
-            for dimy in range(6):
-                initial_grid.append((100 + dimx*61, 100 + dimy*21))
+        #open and parse the stage file
+        stage_file = open(stage_name, 'r')
+        initial_grid = eval(stage_file.read().rstrip())
 
         self.stage = Stage(self, initial_grid, (self.dimension['x']/2, self.dimension['y'] - wall_size[1]), wall_list)
 
@@ -74,12 +68,24 @@ class Game(object):
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.paused = True
-                        exit = menu.PauseMenu().handle_input(screen, self)
+                        exit = menu.PauseMenu(self).handle_input(self.screen)
                         if exit:
                             return
                         dt = clock.tick(120)
+            if not self.blocks.sprites():
+                exit = self.win()
+                if exit:
+                    return
+            if self.ball.position['y'] > self.dimension['y']:
+                exit = self.win()
+                if exit:
+                    return
             dt = clock.tick(120)
             self.sprites.update(dt/1000., self)
-            screen.fill((200, 200, 200))
-            self.sprites.draw(screen)
+            self.screen.fill((200, 200, 200))
+            self.sprites.draw(self.screen)
             pygame.display.flip()
+
+    def win(self):
+        exit = menu.EndGameMenu(self).handle_input(self.screen)
+        return exit

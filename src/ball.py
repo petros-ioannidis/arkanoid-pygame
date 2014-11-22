@@ -82,9 +82,9 @@ class Ball(pygame.sprite.Sprite):
         cell = pygame.sprite.spritecollide(self, game.blocks, False)
         _cell = pygame.sprite.spritecollide(self, game.blocks, False)
         while len(_cell) > 1:
-            if self.rect.x:
+            if self.rect.x and self.speed['x']:
                 self.rect.x -= (self.speed['x']*dt)/abs(self.speed['x']*dt)
-            if self.rect.y:
+            if self.rect.y and self.speed['y']:
                 self.rect.y -= (self.speed['y']*dt)/abs(self.speed['y']*dt)
             cell = _cell
             _cell = pygame.sprite.spritecollide(self, game.blocks, False)
@@ -98,19 +98,69 @@ class Ball(pygame.sprite.Sprite):
 
         if cell:
             _cell = cell[0].rect
+            prev_collision_axis = []
+            collision_axis = []
 
-            if last.right <= _cell.left and new.right > _cell.left:
+            while len(collision_axis) != 1:
+                collision_axis = []
+                if last.right <= _cell.left and new.right > _cell.left:
+                    collision_axis.append('left')
+                if last.left >= _cell.right and new.left < _cell.right:
+                    collision_axis.append('right')
+                if last.bottom <= _cell.top and new.bottom > _cell.top:
+                    collision_axis.append('top')
+                if last.top >= _cell.bottom and new.top < _cell.bottom:
+                    collision_axis.append('bottom')
+
+                if prev_collision_axis:
+                    if len(collision_axis) == 0:
+                        collision_axis = [prev_collision_axis[0]]
+                prev_collision_axis = collision_axis[:]
+
+                if self.speed['x']:
+                    new.x -= (self.speed['x']*dt)/abs(self.speed['x']*dt)
+                else:
+                    new.x = 0
+                if self.speed['y']:
+                    new.y -= (self.speed['y']*dt)/abs(self.speed['y']*dt)
+                else:
+                    new.y = 0
+
+            collision_axis = collision_axis[0]
+            if collision_axis == 'left':
                 new.right = _cell.left
                 self.speed['x'] = -self.speed['x']
-            elif last.left >= _cell.right and new.left < _cell.right:
+
+            elif collision_axis == 'right':
                 new.left = _cell.right
                 self.speed['x'] = -self.speed['x']
 
-            if last.bottom <= _cell.top and new.bottom > _cell.top:
+            elif collision_axis == 'top':
                 new.bottom = _cell.top
                 self.speed['y'] = -self.speed['y']
-            elif last.top >= _cell.bottom and new.top < _cell.bottom:
+
+            elif collision_axis == 'bottom':
                 new.top = _cell.bottom
                 self.speed['y'] = -self.speed['y']
             cell[0].kill()
+            game.score += 1
+
+#        if cell:
+#            _cell = cell[0].rect
+#
+#            if last.right <= _cell.left and new.right > _cell.left:
+#                new.right = _cell.left
+#                self.speed['x'] = -self.speed['x']
+#            elif last.left >= _cell.right and new.left < _cell.right:
+#                new.left = _cell.right
+#                self.speed['x'] = -self.speed['x']
+#
+#            if last.bottom <= _cell.top and new.bottom > _cell.top:
+#                new.bottom = _cell.top
+#                self.speed['y'] = -self.speed['y']
+#            elif last.top >= _cell.bottom and new.top < _cell.bottom:
+#                new.top = _cell.bottom
+#                self.speed['y'] = -self.speed['y']
+#            cell[0].kill()
+
 
