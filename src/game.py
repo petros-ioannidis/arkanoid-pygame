@@ -3,6 +3,9 @@ import pygame
 import menu
 from wall import LeftWall, RightWall, BottomWall, TopWall 
 from stage import Stage
+import os
+
+dir = os.path.dirname(__file__)
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0) 
@@ -24,6 +27,8 @@ class Game(object):
         self.paused = False
         self.score = 0
         self.screen = screen
+        self.win_sound = pygame.mixer.Sound(os.path.join(dir, '../sounds/arkanoid_win.wav'))
+        self.lose_sound = pygame.mixer.Sound(os.path.join(dir, '../sounds/arkanoid_lose.wav'))
 
     def main(self, stage_name):
         clock = pygame.time.Clock()
@@ -71,13 +76,13 @@ class Game(object):
                         exit = menu.PauseMenu(self).handle_input(self.screen)
                         if exit:
                             return
-                        dt = clock.tick(120)
+                        dt = clock.tick(60)
             if not self.blocks.sprites():
                 exit = self.win()
                 if exit:
                     return
             if self.ball.position['y'] > self.dimension['y']:
-                exit = self.win()
+                exit = self.lose()
                 if exit:
                     return
             dt = clock.tick(120)
@@ -87,5 +92,11 @@ class Game(object):
             pygame.display.flip()
 
     def win(self):
-        exit = menu.EndGameMenu(self).handle_input(self.screen)
+        self.win_sound.play()
+        exit = menu.EndGameMenu(self, 'You win!').handle_input(self.screen)
+        return exit
+
+    def lose(self):
+        self.lose_sound.play()
+        exit = menu.EndGameMenu(self, 'You lose!').handle_input(self.screen)
         return exit

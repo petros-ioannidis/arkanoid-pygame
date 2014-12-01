@@ -218,11 +218,12 @@ class PauseMenu(Menu):
 
 class EndGameMenu(Menu):
     """The menu to be displayed after the game ends."""
-    def __init__(self, game_instance):
+    def __init__(self, game_instance, state):
         options = ('Exit to main menu',)
         font_size = 36
         font_space = 4
         self.game_instance = game_instance
+        self.state = state
         super(EndGameMenu, self).__init__(options, font_size, font_space, BLUE, RED, WHITE)
 
     def display(self, screen):
@@ -230,6 +231,9 @@ class EndGameMenu(Menu):
         text = self.font.render('Score: %d' % self.game_instance.score, 1, BLACK)
         text_rect = text.get_rect(centerx=screen.get_width()//2, centery=y + self.font_size + self.font_space)
         self.option_obj[-1] = text, text_rect
+        text = self.font.render(self.state, 1, BLACK)
+        text_rect = text.get_rect(centerx=screen.get_width()//2, centery=y + 2*self.font_size + 2*self.font_space)
+        self.option_obj[-2] = text, text_rect
         y = 4*screen.get_height()//5 - self.height//2
         super(EndGameMenu, self).display(screen, y)
 
@@ -238,7 +242,7 @@ class EndGameMenu(Menu):
         self.display(screen)
         
         while True:
-            dt = clock.tick(120)
+            dt = clock.tick(60)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return True

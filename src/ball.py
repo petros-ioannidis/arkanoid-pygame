@@ -14,8 +14,8 @@ class Ball(pygame.sprite.Sprite):
         self.dim = self.image.get_size()
         self.rect = pygame.rect.Rect(position, self.image.get_size())
         #to add variable speed and rotation and angle
-        self.top_speed = {'x': 400, 'y': 400}
-        self.speed = {'x': 400, 'y': 400}
+        self.top_speed = {'x': 500, 'y': 500}
+        self.speed = {'x': 500, 'y': 500}
         self.attached_to = {'sprite': None, 'side': None, 'relative_position': None, 'move': None}
         self.position = {'x': position[0], 'y': position[1]}
 

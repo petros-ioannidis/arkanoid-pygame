@@ -42,9 +42,9 @@ class Racket(pygame.sprite.Sprite):
         last = self.rect.copy()
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
-            self.rect.x -= 300*dt
+            self.rect.x -= 600*dt
         if key[pygame.K_RIGHT]:
-            self.rect.x += 300*dt
+            self.rect.x += 600*dt
 
         new = self.rect
         for cell in pygame.sprite.spritecollide(self, game.walls, False):
