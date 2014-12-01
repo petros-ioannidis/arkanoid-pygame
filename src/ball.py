@@ -10,6 +10,7 @@ class Ball(pygame.sprite.Sprite):
     def __init__(self, position, *groups):
         super(Ball, self).__init__(*groups)
         self.image = pygame.image.load(os.path.join(dir, '../sprites/ball.png'))
+        self.hit = pygame.mixer.Sound(os.path.join(dir, '../sounds/Hit_Hurt.wav'))
         self.dim = self.image.get_size()
         self.rect = pygame.rect.Rect(position, self.image.get_size())
         #to add variable speed and rotation and angle
@@ -144,6 +145,8 @@ class Ball(pygame.sprite.Sprite):
                 self.speed['y'] = -self.speed['y']
             cell[0].kill()
             game.score += 1
+            self.hit.play()
+
 
 #        if cell:
 #            _cell = cell[0].rect

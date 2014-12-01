@@ -1,5 +1,8 @@
 import pygame
 import game
+import os
+
+dir = os.path.dirname(__file__)
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0) 
@@ -96,6 +99,8 @@ class MainMenu(Menu):
                    'Exit')
         font_size = 36
         font_space = 4
+        pygame.mixer.music.load(os.path.join(dir, '../sounds/arkanoid.wav'))
+
         super(MainMenu, self).__init__(options, font_size, font_space, WHITE, RED, BLACK)
 
     def handle_input(self, screen):
@@ -109,6 +114,7 @@ class MainMenu(Menu):
         clock = pygame.time.Clock()
         self.display(screen)
         
+        pygame.mixer.music.play(-1)
         while True:
             dt = clock.tick(120)
             for event in pygame.event.get():
@@ -138,10 +144,13 @@ class MainMenu(Menu):
                     elif event.key == pygame.K_RETURN:
                         if self.active:
                             if self.options[self.highlight_entry] == "Start game":
+                                pygame.mixer.music.stop()
                                 game.Game(screen, (screen.get_width(), screen.get_height())).main('stages/sample_stage')
+                                pygame.mixer.music.play(-1)
                                 self.highlight(0)
                                 self.display(screen)
                             elif self.options[self.highlight_entry] == "Exit":
+                                pygame.mixer.music.stop()
                                 return
 
 
