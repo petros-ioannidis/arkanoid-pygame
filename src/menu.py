@@ -145,7 +145,7 @@ class MainMenu(Menu):
                         if self.active:
                             if self.options[self.highlight_entry] == "Start game":
                                 pygame.mixer.music.stop()
-                                game.Game(screen, (screen.get_width(), screen.get_height())).main('stages/sample_stage')
+                                game.Game(screen, (screen.get_width(), screen.get_height())).main('../stages/sample_stage')
                                 pygame.mixer.music.play(-1)
                                 self.highlight(0)
                                 self.display(screen)
